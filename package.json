@@ -4,7 +4,7 @@
   "description": "PIXI.js graph renderer",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node_modules/.bin/browserify -s ngraph ./example/index.js > ./example/bundle.js"
   },
   "keywords": [
     "ngraph",
@@ -17,5 +17,14 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/anvaka/ngraph.pixi"
+  },
+  "dependencies": {
+    "ngraph.merge": "0.0.1"
+  },
+  "devDependencies": {
+    "ngraph.generators": "0.0.2",
+    "ngraph.physics.simulator": "0.0.4",
+    "ngraph.forcelayout": "0.0.4",
+    "browserify": "~3.19.1"
   }
 }
