@@ -5,32 +5,21 @@ as a rendering engine.
 
 # Example
 
-This code will render a graph, and will let users zoom in/zoom out with mouse wheel.
-Each node of the graph can be individually dragged.
+This code will render interactive graph:
 
 ``` js
   // let's create a simple graph with two nodes, connected by edge:
   var graph = require('ngraph.graph')();
   graph.addLink(1, 2);
 
-  // Now create a force directed layout:
-  var layout = require('ngraph.forcelayout')(graph);
-
   // Create a pixi renderer:
-  var pixiGraphics = require('ngraph.pixi')(graph, layout);
+  var pixiGraphics = require('ngraph.pixi')(graph);
 
   // And launch animation loop:
-  renderFrame();
-
-  function renderFrame() {
-    layout.step();
-    pixiGraphics.renderFrame();
-    requestAnimFrame(renderFrame);
-  }
+  pixiGraphics.run();
 ```
 
-To see full source code with html markup, please refer to [example](./example/)
-folder.
+To run it, please refer to [example](./example/) folder.
 
 # install
 
@@ -48,19 +37,28 @@ npm start
 
 # Customization
 
-This renderer allows you to customize appearance of nodes and edges. E.g. to render
-custom colored nodes:
+`ngraph.pixi` allows you to customize various aspects of graph appearance
+
+## Nodes/Link
+
+When working with `ngraph.graph` each node may have associated data. This data
+is considered a data model of a node. `ngraph.pixi` lets clients convert associated
+data model into UI model for node (`createNodeUI()`) or link (`createLinkUI()`).
+
+Results of these methods are then used to actually render a node (`renderNode()`)
+or a link (`renderLink()`).
 
 ``` js
-// add two nodes with associated data:
-graph.addNode('user1', {color: 0x00FFFF});
-graph.addNode('user2', {color: 0x00FF00});
+// add two nodes with associated data model
+graph.addNode('user1', {sex: 'male'});
+graph.addNode('user2', {sex: 'female'});
 
 // Construct UI model for node:
 pixiGraphics.createNodeUI(function (node) {
   return {
     width: 2 + Math.random() * 20,
-    color: node.data.color // use settings from node's data
+    // use settings from node's data
+    color: node.data.sex === 'female' ? 0xFF0000 : 0x0000FF
   };
 });
 
@@ -74,6 +72,31 @@ pixiGraphics.renderNode(function (nodeUIModel, ctx) {
   ctx.drawRect(x, y, nodeUIModel.width, nodeUIModel.width);
 });
 ```
+
+There are several reasons for such separation of concern. One is performance: By
+constructing UI model once we are saving CPU cycles at rendering time. Another reason
+for separation - you can have multiple renderers render the same graph without
+interfering with each other.
+
+## Physics
+
+You can change default physics engine algorithm by passing `physics` object inside
+settings:
+
+``` js
+  var createPixiGraphics = require('ngraph.pixi');
+  var pixiGraphics = createPixiGraphics(graph, {
+    physics: {
+      springLength: 30,
+      springCoeff: 0.0008,
+      dragCoeff: 0.01,
+      gravity: -1.2,
+    }
+  })
+```
+
+To read more information about each of these and even more properties, please
+refer to [physics engine documentation](https://github.com/anvaka/ngraph.physics.simulator/blob/b674df18e3b64c2ec86ef1a298736b5879eafe01/index.js#L15-L49).
 
 # What is missing?
 
@@ -89,6 +112,8 @@ are rerendered on each frame. This can be improved by impleleming custom `PIXI.D
 [more info](https://github.com/GoodBoyDigital/pixi.js/issues/479#issuecomment-31973283)
 * Mouse/touch events are not exposed externally from the renderer. It will be
 nice to let clients of this library to react on user actions.
+* While all `ngraph` family modules are heavily tested, this one is lacking tests.
+Still trying to find out what test runner woudl suit better.
 
 # license
 
