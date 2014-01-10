@@ -73,7 +73,7 @@ pixiGraphics.renderNode(function (nodeUIModel, ctx) {
 });
 ```
 
-There are several reasons for such separation of concern. One is performance: By
+There are several reasons for such separation of concerns. One is performance: By
 constructing UI model once we are saving CPU cycles at rendering time. Another reason
 for separation - you can have multiple renderers render the same graph without
 interfering with each other.
@@ -108,12 +108,12 @@ could be done better:
 * Renderer currently works with `PIXI.Graphics`, which does not let rendering
 custom text on the screen
 * `PIXI.Graphics` has decent pressure on garbage collector, since all primitives
-are rerendered on each frame. This can be improved by impleleming custom `PIXI.DisplayObject` - 
+are rerendered on each frame. This can be improved by implementing custom `PIXI.DisplayObject` - 
 [more info](https://github.com/GoodBoyDigital/pixi.js/issues/479#issuecomment-31973283)
 * Mouse/touch events are not exposed externally from the renderer. It will be
 nice to let clients of this library to react on user actions.
 * While all `ngraph` family modules are heavily tested, this one is lacking tests.
-Still trying to find out what test runner woudl suit better.
+Still trying to find out what test runner would suit better.
 
 # license
 
