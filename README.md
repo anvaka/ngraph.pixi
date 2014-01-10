@@ -1,6 +1,6 @@
 # ngraph.pixi
 
-This is a 2d graph renderer which uses [PIXI.js](https://github.com/GoodBoyDigital/pixi.js/tree/master/src/pixi)
+This is a 2d graph renderer which uses [PIXI.js](https://github.com/GoodBoyDigital/pixi.js)
 as a rendering engine.
 
 # Example
