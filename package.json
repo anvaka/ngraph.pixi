@@ -1,0 +1,21 @@
+{
+  "name": "ngraph.pixi",
+  "version": "0.0.0",
+  "description": "PIXI.js graph renderer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ngraph",
+    "pixi",
+    "graph",
+    "rednering"
+  ],
+  "author": "Andrei Kashcha",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anvaka/ngraph.pixi"
+  }
+}
