@@ -101,7 +101,7 @@ refer to [physics engine documentation](https://github.com/anvaka/ngraph.physics
 # What is missing?
 
 This library was created as part of [ngraph](https://github.com/anvaka/ngraph)
-project. If you like PIXI and want to help with graph rendering using, your 
+project. If you like PIXI and want to help with graph rendering, your 
 contribution is absolutely welcomed and appreciated. Here are just some things which
 could be done better:
 
