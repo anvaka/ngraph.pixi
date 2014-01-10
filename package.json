@@ -19,12 +19,12 @@
     "url": "https://github.com/anvaka/ngraph.pixi"
   },
   "dependencies": {
-    "ngraph.merge": "0.0.1"
+    "ngraph.merge": "0.0.1",
+    "ngraph.physics.simulator": "0.0.4",
+    "ngraph.forcelayout": "0.0.4"
   },
   "devDependencies": {
     "ngraph.generators": "0.0.2",
-    "ngraph.physics.simulator": "0.0.4",
-    "ngraph.forcelayout": "0.0.4",
     "browserify": "~3.19.1"
   }
 }

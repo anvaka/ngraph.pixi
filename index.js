@@ -1,12 +1,35 @@
 var NODE_WIDTH = 10;
 
-module.exports = function (graph, layout, settings) {
-  // TODO: this should be width and height of parent container
+module.exports = function (graph, settings) {
   var merge = require('ngraph.merge');
+
+  // Initialize default settings:
   settings = merge(settings, {
+    // Where do we render our graph?
     container: document.body,
-    background: 0x000000
+
+    // What is the background color of a graph?
+    background: 0x000000,
+
+    // Default physics engine settings
+    physics: {
+      springLength: 30,
+      springCoeff: 0.0008,
+      dragCoeff: 0.01,
+      gravity: -1.2,
+      theta: 1
+    }
   });
+
+  // If client does not need custom layout algorithm, let's create default one:
+  var layout = settings.layout;
+
+  if (!layout) {
+    var createLayout = require('ngraph.forcelayout'),
+        physics = require('ngraph.physics.simulator');
+
+    layout = createLayout(graph, physics(settings.physics));
+  }
 
   var width = settings.container.clientWidth,
       height = settings.container.clientHeight;
@@ -39,12 +62,15 @@ module.exports = function (graph, layout, settings) {
 
   var pixiGraphics = {
     /**
-     * Renders current graph to the stage
+     * Allows client to start animation loop, without worrying about RAF stuff.
      */
-    renderFrame: function () {
-      drawGraph();
-      renderer.render(stage);
-    },
+    run: animationLoop,
+
+    /**
+     * For more sophisticated clients we expose one frame rendering as part of
+     * API. This may be useful for clients who have their own RAF pipeline.
+     */
+    renderOneFrame: renderOneFrame,
 
     /**
      * This callback creates new UI for a graph node. This becomes helpful
@@ -149,9 +175,17 @@ module.exports = function (graph, layout, settings) {
      */
     getNodeAt: getNodeAt,
 
+    /**
+     * [Read only] Current layout algorithm. If you want to pass custom layout
+     * algorithm, do it via `settings` argument of ngraph.pixi.
+     */
+    layout: layout,
+
+    // TODO: These properties seem to only be required fo graph input. I'd really
+    // like to hide them, but not sure how to do it nicely
     domContainer: renderer.view,
     graphGraphics: graphics,
-    stage: stage,
+    stage: stage
   };
 
   // listen to mouse events
@@ -160,11 +194,23 @@ module.exports = function (graph, layout, settings) {
 
   return pixiGraphics;
 
-  function drawGraph() {
+///////////////////////////////////////////////////////////////////////////////
+// Public API is over
+///////////////////////////////////////////////////////////////////////////////
+
+  function animationLoop() {
+    layout.step();
+    renderOneFrame();
+    requestAnimFrame(animationLoop);
+  }
+
+  function renderOneFrame() {
     graphics.clear();
 
     Object.keys(linkUI).forEach(renderLink);
     Object.keys(nodeUI).forEach(renderNode);
+
+    renderer.render(stage);
   }
 
   function renderLink(linkId) {
