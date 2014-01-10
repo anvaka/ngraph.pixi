@@ -80,7 +80,7 @@ interfering with each other.
 
 ## Physics
 
-You can change default physics engine algorithm by passing `physics` object inside
+You can change default physics engine parameters by passing `physics` object inside
 settings:
 
 ``` js
