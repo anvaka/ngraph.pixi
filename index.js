@@ -165,15 +165,17 @@ module.exports = function (graph, settings) {
     },
 
     /**
-     * Tries to get node at (x, y) coordinates. By default renderer assumes
+     * Tries to get node at (x, y) graph coordinates. By default renderer assumes
      * width and height of the node is 10 pixels. But if your createNodeUICallback
      * returns object with `width` and `height` attributes, they are considered
      * as actual dimensions of a node
      *
-     * @param {Number} x - x coordinate
-     * @param {Number} y - y coordinate
+     * @param {Number} x - x coordinate of a node in layout's coordinates
+     * @param {Number} y - y coordinate of a node in layout's coordinates
      * @returns {Object} - acutal graph node located at (x, y) coordinates.
      * If there is no node in that are `undefined` is returned.
+     *
+     * TODO: This should be part of layout itself
      */
     getNodeAt: getNodeAt,
 
