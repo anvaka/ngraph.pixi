@@ -1,0 +1,14 @@
+name: pixi_graphics
+ui: mocha-qunit
+# html: templates.html
+scripts:
+  - "../pixi/pixi.dev.js"
+browsers:
+  - name: chrome
+    version: latest
+  - name: firefox
+    version: latest
+  - name: safari
+    version: latest
+  - name: ie
+    version: 9..latest

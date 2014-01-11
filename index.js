@@ -5,9 +5,6 @@ module.exports = function (graph, settings) {
 
   // Initialize default settings:
   settings = merge(settings, {
-    // Where do we render our graph?
-    container: document.body,
-
     // What is the background color of a graph?
     background: 0x000000,
 
@@ -20,6 +17,11 @@ module.exports = function (graph, settings) {
       theta: 1
     }
   });
+
+  // Where do we render our graph?
+  if (typeof settings.container === 'undefined') {
+    settings.container = document.body
+  }
 
   // If client does not need custom layout algorithm, let's create default one:
   var layout = settings.layout;
