@@ -4,7 +4,7 @@
   "description": "PIXI.js graph renderer",
   "main": "index.js",
   "scripts": {
-    "test": "zuul --local 31026 -- ./test/*.js",
+    "test": "zuul -- test",
     "start": "node_modules/.bin/browserify -s ngraph ./example/index.js > ./example/bundle.js"
   },
   "keywords": [
