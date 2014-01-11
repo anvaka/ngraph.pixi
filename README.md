@@ -114,8 +114,7 @@ are rerendered on each frame. This can be improved by implementing custom `PIXI.
 [more info](https://github.com/GoodBoyDigital/pixi.js/issues/479#issuecomment-31973283)
 * Mouse/touch events are not exposed externally from the renderer. It will be
 nice to let clients of this library to react on user actions.
-* While all `ngraph` family modules are heavily tested, this one is lacking tests.
-Still trying to find out what test runner would suit better.
+* Need methods like pan/zoom to be exposed via API
 
 # license
 
