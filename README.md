@@ -3,6 +3,8 @@
 This is a 2d graph renderer which uses [PIXI.js](https://github.com/GoodBoyDigital/pixi.js)
 as a rendering engine.
 
+[![build status](https://secure.travis-ci.org/anvaka/ngraph.pixi.png)](http://travis-ci.org/anvaka/ngraph.pixi)
+
 # Example
 
 This code will render interactive graph:
