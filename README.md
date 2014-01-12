@@ -112,8 +112,9 @@ custom text on the screen
 * `PIXI.Graphics` has decent pressure on garbage collector, since all primitives
 are rerendered on each frame. This can be improved by implementing custom `PIXI.DisplayObject` - 
 [more info](https://github.com/GoodBoyDigital/pixi.js/issues/479#issuecomment-31973283)
-* Mouse/touch events are not exposed externally from the renderer. It will be
+* Mouse events are not exposed externally from the renderer. It will be
 nice to let clients of this library to react on user actions.
+* While touch event is supported by PIXI.js it needs to be added to the renderer.
 * Need methods like pan/zoom to be exposed via API
 
 # license
