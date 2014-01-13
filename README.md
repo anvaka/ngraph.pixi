@@ -3,6 +3,8 @@
 This is a 2d graph renderer which uses [PIXI.js](https://github.com/GoodBoyDigital/pixi.js)
 as a rendering engine.
 
+[![build status](https://secure.travis-ci.org/anvaka/ngraph.pixi.png)](http://travis-ci.org/anvaka/ngraph.pixi)
+
 # Example
 
 This code will render interactive graph:
@@ -110,10 +112,10 @@ custom text on the screen
 * `PIXI.Graphics` has decent pressure on garbage collector, since all primitives
 are rerendered on each frame. This can be improved by implementing custom `PIXI.DisplayObject` - 
 [more info](https://github.com/GoodBoyDigital/pixi.js/issues/479#issuecomment-31973283)
-* Mouse/touch events are not exposed externally from the renderer. It will be
+* Mouse events are not exposed externally from the renderer. It will be
 nice to let clients of this library to react on user actions.
-* While all `ngraph` family modules are heavily tested, this one is lacking tests.
-Still trying to find out what test runner would suit better.
+* While touch event is supported by PIXI.js it needs to be added to the renderer.
+* Need methods like pan/zoom to be exposed via API
 
 # license
 
