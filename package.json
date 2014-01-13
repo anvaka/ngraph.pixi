@@ -1,6 +1,6 @@
 {
   "name": "ngraph.pixi",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "PIXI.js graph renderer",
   "main": "index.js",
   "scripts": {
@@ -21,8 +21,8 @@
   },
   "dependencies": {
     "ngraph.merge": "0.0.1",
-    "ngraph.physics.simulator": "0.0.4",
-    "ngraph.forcelayout": "0.0.6"
+    "ngraph.physics.simulator": "0.0.5",
+    "ngraph.forcelayout": "0.0.7"
   },
   "devDependencies": {
     "ngraph.generators": "0.0.2",
