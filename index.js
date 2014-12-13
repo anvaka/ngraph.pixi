@@ -84,7 +84,7 @@ module.exports = function (graph, settings) {
      * @returns {object} arbitrary object which will be later passed to renderNode
      */
     /**
-     * This function allows clients to pass custon node UI creation callback
+     * This function allows clients to pass custom node UI creation callback
      * 
      * @param {createNodeUICallback} createNodeUICallback - The callback that 
      * creates new node UI
@@ -129,7 +129,7 @@ module.exports = function (graph, settings) {
      * @returns {object} arbitrary object which will be later passed to renderNode
      */
     /**
-     * This function allows clients to pass custon node UI creation callback
+     * This function allows clients to pass custom node UI creation callback
      * 
      * @param {createLinkUICallback} createLinkUICallback - The callback that
      * creates new link UI
@@ -172,7 +172,7 @@ module.exports = function (graph, settings) {
      *
      * @param {Number} x - x coordinate of a node in layout's coordinates
      * @param {Number} y - y coordinate of a node in layout's coordinates
-     * @returns {Object} - acutal graph node located at (x, y) coordinates.
+     * @returns {Object} - actual graph node located at (x, y) coordinates.
      * If there is no node in that are `undefined` is returned.
      *
      * TODO: This should be part of layout itself
@@ -185,7 +185,7 @@ module.exports = function (graph, settings) {
      */
     layout: layout,
 
-    // TODO: These properties seem to only be required fo graph input. I'd really
+    // TODO: These properties seem to only be required of graph input. I'd really
     // like to hide them, but not sure how to do it nicely
     domContainer: renderer.view,
     graphGraphics: graphics,
