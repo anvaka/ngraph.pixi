@@ -1,4 +1,5 @@
 var NODE_WIDTH = 10;
+var PIXI = require('pixi.js');
 
 module.exports = function (graph, settings) {
   var merge = require('ngraph.merge');
@@ -20,7 +21,7 @@ module.exports = function (graph, settings) {
 
   // Where do we render our graph?
   if (typeof settings.container === 'undefined') {
-    settings.container = document.body
+    settings.container = document.body;
   }
 
   // If client does not need custom layout algorithm, let's create default one:
@@ -85,8 +86,8 @@ module.exports = function (graph, settings) {
      */
     /**
      * This function allows clients to pass custom node UI creation callback
-     * 
-     * @param {createNodeUICallback} createNodeUICallback - The callback that 
+     *
+     * @param {createNodeUICallback} createNodeUICallback - The callback that
      * creates new node UI
      * @returns {object} this for chaining.
      */
@@ -130,7 +131,7 @@ module.exports = function (graph, settings) {
      */
     /**
      * This function allows clients to pass custom node UI creation callback
-     * 
+     *
      * @param {createLinkUICallback} createLinkUICallback - The callback that
      * creates new link UI
      * @returns {object} this for chaining.
@@ -203,9 +204,9 @@ module.exports = function (graph, settings) {
 ///////////////////////////////////////////////////////////////////////////////
 
   function animationLoop() {
+    requestAnimationFrame(animationLoop);
     layout.step();
     renderOneFrame();
-    requestAnimFrame(animationLoop);
   }
 
   function renderOneFrame() {
@@ -240,11 +241,11 @@ module.exports = function (graph, settings) {
     linkUI[link.id] = ui;
   }
 
-  function defaultCreateNodeUI(node) {
+  function defaultCreateNodeUI() {
     return {};
   }
 
-  function defaultCreateLinkUI(link) {
+  function defaultCreateLinkUI() {
     return {};
   }
 
@@ -271,7 +272,7 @@ module.exports = function (graph, settings) {
         var node = nodeUI[nodeId];
         var pos = node.pos;
         var width = node.width || NODE_WIDTH;
-        var half = width/2;
+        half = width/2;
         var insideNode = pos.x - half < x && x < pos.x + half &&
                          pos.y - half < y && y < pos.y + half;
 
@@ -306,4 +307,4 @@ module.exports = function (graph, settings) {
       }
     }
   }
-}
+};
