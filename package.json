@@ -1,6 +1,6 @@
 {
   "name": "ngraph.pixi",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "PIXI.js graph renderer",
   "main": "index.js",
   "scripts": {
