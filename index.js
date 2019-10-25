@@ -42,7 +42,7 @@ module.exports = function (graph, settings) {
   var height = settings.container.clientHeight;
 
   var stage = new PIXI.Container();
-  var renderer = PIXI.autoDetectRenderer(width, height, settings.rendererOptions, false, true);
+  var renderer = new PIXI.WebGLRenderer(width, height, settings.rendererOptions, false, true);
 
   settings.container.appendChild(renderer.view);
 
@@ -262,7 +262,7 @@ module.exports = function (graph, settings) {
   }
 
   function defaultLinkRenderer(link) {
-    graphics.lineStyle(1, 0xcccccc, 1);
+    graphics.lineStyle(2, 0xcccccc, 1);
     graphics.moveTo(link.from.x, link.from.y);
     graphics.lineTo(link.to.x, link.to.y);
   }

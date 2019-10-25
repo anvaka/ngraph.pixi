@@ -2,7 +2,7 @@ module.exports = function (node) {
   return new AnimatedNode();
 }
 
-var colorLookup = [0x00FFFF, 0xFF5552];
+var colorLookup = [0x2780e3, 0xFF5552];
 
 function AnimatedNode() {
   this.color = colorLookup[(Math.random() * colorLookup.length)|0];
