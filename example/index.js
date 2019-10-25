@@ -8,7 +8,18 @@ module.exports.main = function () {
   var graph = require('ngraph.generators').balancedBinTree(6);
   var createPixiGraphics = require('../');
 
-  var pixiGraphics = createPixiGraphics(graph);
+  var setting = {
+    rendererOptions: {
+      backgroundColor: 0xFFFFFF,
+      antialias: true,
+    }
+  }
+
+  var pixiGraphics = createPixiGraphics(graph, setting);
+  //pixiGraphics.createLinkUI(require('./lib/createLinkUI'));
+  //pixiGraphics.renderLink(require('./lib/renderLink'));
+  //pixiGraphics.createNodeUI(require('./lib/createNodeUI'));
+  //pixiGraphics.renderNode(require('./lib/renderNode'));
   var layout = pixiGraphics.layout;
 
   // just make sure first node does not move:

@@ -7,7 +7,11 @@ module.exports = function (graph, settings) {
   // Initialize default settings:
   settings = merge(settings, {
     // What is the background color of a graph?
-    background: 0x000000,
+
+    rendererOptions: {
+      backgroundColor: 0x000000,
+      antialias: true,
+    },
 
     // Default physics engine settings
     physics: {
@@ -28,17 +32,17 @@ module.exports = function (graph, settings) {
   var layout = settings.layout;
 
   if (!layout) {
-    var createLayout = require('ngraph.forcelayout'),
-        physics = require('ngraph.physics.simulator');
+    var createLayout = require('ngraph.forcelayout');
+    var physics = require('ngraph.physics.simulator');
 
     layout = createLayout(graph, physics(settings.physics));
   }
 
-  var width = settings.container.clientWidth,
-      height = settings.container.clientHeight;
+  var width = settings.container.clientWidth;
+  var height = settings.container.clientHeight;
 
   var stage = new PIXI.Container();
-  var renderer = PIXI.autoDetectRenderer(width, height, null, false, true);
+  var renderer = PIXI.autoDetectRenderer(width, height, settings.rendererOptions, false, true);
 
   settings.container.appendChild(renderer.view);
 
