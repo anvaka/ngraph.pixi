@@ -13,6 +13,10 @@ module.exports.main = function () {
     rendererOptions: {
       backgroundColor: 0xFFFFFF,
       antialias: true,
+    },
+    labelConf: {
+      enable: false,
+      text: 'Label to personal code'
     }
   }
 
@@ -28,6 +32,10 @@ module.exports.main = function () {
 
   // begin animation loop:
   pixiGraphics.run();
+//You now can managed the renderer;
+  pixiGraphics.stop();
+
+  pixiGraphics.resume();
 }
 
 },{"../":6,"./lib/createLinkUI":2,"./lib/createNodeUI":3,"./lib/renderLink":4,"./lib/renderNode":5,"ngraph.generators":24}],2:[function(require,module,exports){
@@ -76,11 +84,25 @@ module.exports = function (animatedNode, ctx) {
   ctx.lineStyle(0);
   ctx.beginFill(animatedNode.color,1);
   ctx.drawCircle(animatedNode.pos.x, animatedNode.pos.y, animatedNode.width);
+  let x = animatedNode.pos.x;
+  let y = animatedNode.pos.y;
+  if(animatedNode.label === undefined){
+    animatedNode.label = new PIXI.Text('Node Label', { fontFamily: "Arial", fontSize: "20px" ,  fill: 0x000000} );
+    animatedNode.label.x = x;
+    animatedNode.label.y = y + animatedNode.width/2;
+    ctx.addChild(animatedNode.label);
+  }else{
+    animatedNode.label.x = x;
+    animatedNode.label.y = y + animatedNode.width/2;
+    animatedNode.label.updateText();
+  }
 }
 
 },{}],6:[function(require,module,exports){
 var NODE_WIDTH = 10;
 var PIXI = require('pixi.js');
+
+var rendererLoopStop = false;
 
 module.exports = function (graph, settings) {
   var merge = require('ngraph.merge');
@@ -103,6 +125,8 @@ module.exports = function (graph, settings) {
       theta: 1
     }
   });
+
+  var labelConf = settings.labelConf;
 
   // Where do we render our graph?
   if (typeof settings.container === 'undefined') {
@@ -153,6 +177,10 @@ module.exports = function (graph, settings) {
      * Allows client to start animation loop, without worrying about RAF stuff.
      */
     run: animationLoop,
+
+    stop: stopRendered,
+
+    resume: resumeRenderer,
 
     /**
      * For more sophisticated clients we expose one frame rendering as part of
@@ -289,9 +317,21 @@ module.exports = function (graph, settings) {
 ///////////////////////////////////////////////////////////////////////////////
 
   function animationLoop() {
+    if(rendererLoopStop === true){return;}
     requestAnimationFrame(animationLoop);
     layout.step();
     renderOneFrame();
+  }
+
+  function stopRendered(){
+    rendererLoopStop = true;
+    console.debug('Renderer Stop');
+  }
+
+  function resumeRenderer(){
+    rendererLoopStop = false;
+    animationLoop();
+    console.debug('Renderer Resume');
   }
 
   function renderOneFrame() {
@@ -337,9 +377,23 @@ module.exports = function (graph, settings) {
   function defaultNodeRenderer(node) {
     var x = node.pos.x - NODE_WIDTH/2,
         y = node.pos.y - NODE_WIDTH/2;
-
     graphics.beginFill(0xFF3300);
     graphics.drawRect(x, y, NODE_WIDTH, NODE_WIDTH);
+
+    if(labelConf.enable){
+      if(node.label === undefined){
+
+        node.label = new PIXI.Text(labelConf.text, { fontFamily: "Arial", fontSize: "20px" ,  fill: 0x000000} );
+        node.label.x = x;
+        node.label.y = y + NODE_WIDTH/2;
+        graphics.addChild(node.label);
+      }else{
+        node.label.x = x;
+        node.label.y = y + NODE_WIDTH/2;
+        node.label.updateText();
+      }
+    }
+    
   }
 
   function defaultLinkRenderer(link) {

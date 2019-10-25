@@ -12,6 +12,10 @@ module.exports.main = function () {
     rendererOptions: {
       backgroundColor: 0xFFFFFF,
       antialias: true,
+    },
+    labelConf: {
+      enable: false,
+      text: 'Label to personal code'
     }
   }
 
@@ -27,4 +31,8 @@ module.exports.main = function () {
 
   // begin animation loop:
   pixiGraphics.run();
+//You now can managed the renderer;
+  pixiGraphics.stop();
+
+  pixiGraphics.resume();
 }

@@ -1,6 +1,8 @@
 var NODE_WIDTH = 10;
 var PIXI = require('pixi.js');
 
+var rendererLoopStop = false;
+
 module.exports = function (graph, settings) {
   var merge = require('ngraph.merge');
 
@@ -22,6 +24,8 @@ module.exports = function (graph, settings) {
       theta: 1
     }
   });
+
+  var labelConf = settings.labelConf;
 
   // Where do we render our graph?
   if (typeof settings.container === 'undefined') {
@@ -72,6 +76,10 @@ module.exports = function (graph, settings) {
      * Allows client to start animation loop, without worrying about RAF stuff.
      */
     run: animationLoop,
+
+    stop: stopRendered,
+
+    resume: resumeRenderer,
 
     /**
      * For more sophisticated clients we expose one frame rendering as part of
@@ -208,9 +216,21 @@ module.exports = function (graph, settings) {
 ///////////////////////////////////////////////////////////////////////////////
 
   function animationLoop() {
+    if(rendererLoopStop === true){return;}
     requestAnimationFrame(animationLoop);
     layout.step();
     renderOneFrame();
+  }
+
+  function stopRendered(){
+    rendererLoopStop = true;
+    console.debug('Renderer Stop');
+  }
+
+  function resumeRenderer(){
+    rendererLoopStop = false;
+    animationLoop();
+    console.debug('Renderer Resume');
   }
 
   function renderOneFrame() {
@@ -256,9 +276,23 @@ module.exports = function (graph, settings) {
   function defaultNodeRenderer(node) {
     var x = node.pos.x - NODE_WIDTH/2,
         y = node.pos.y - NODE_WIDTH/2;
-
     graphics.beginFill(0xFF3300);
     graphics.drawRect(x, y, NODE_WIDTH, NODE_WIDTH);
+
+    if(labelConf.enable){
+      if(node.label === undefined){
+
+        node.label = new PIXI.Text(labelConf.text, { fontFamily: "Arial", fontSize: "20px" ,  fill: 0x000000} );
+        node.label.x = x;
+        node.label.y = y + NODE_WIDTH/2;
+        graphics.addChild(node.label);
+      }else{
+        node.label.x = x;
+        node.label.y = y + NODE_WIDTH/2;
+        node.label.updateText();
+      }
+    }
+    
   }
 
   function defaultLinkRenderer(link) {
