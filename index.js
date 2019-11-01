@@ -8,13 +8,10 @@ module.exports = function (graph, settings) {
 
   // Initialize default settings:
   settings = merge(settings, {
-    // What is the background color of a graph?
-
+    // Options for PixiJS renderer
     rendererOptions: {
-      backgroundColor: 0x000000,
-      antialias: true,
+      backgroundColor: 0x000000
     },
-
     // Default physics engine settings
     physics: {
       springLength: 30,
@@ -46,7 +43,7 @@ module.exports = function (graph, settings) {
   var height = settings.container.clientHeight;
 
   var stage = new PIXI.Container();
-  var renderer = new PIXI.WebGLRenderer(width, height, settings.rendererOptions, false, true);
+  var renderer = PIXI.autoDetectRenderer(width, height, null, false, true);
 
   settings.container.appendChild(renderer.view);
 
