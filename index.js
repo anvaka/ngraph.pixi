@@ -1,7 +1,8 @@
-var NODE_WIDTH = 10;
-var PIXI = require('pixi.js');
+const NODE_WIDTH = 10;
 
-var rendererLoopStop = false;
+let rendererLoopStop = false;
+let PIXI = require('pixi.js');
+let eventify = require('ngraph.events');
 
 module.exports = function (graph, settings) {
   var merge = require('ngraph.merge');
@@ -10,7 +11,8 @@ module.exports = function (graph, settings) {
   settings = merge(settings, {
     // Options for PixiJS renderer
     rendererOptions: {
-      backgroundColor: 0x000000
+      backgroundColor: 0x000000,
+      antialias: true,
     },
     // Default physics engine settings
     physics: {
@@ -19,10 +21,15 @@ module.exports = function (graph, settings) {
       dragCoeff: 0.01,
       gravity: -1.2,
       theta: 1
-    }
+    },
+
+    oriented: false,
   });
 
-  var labelConf = settings.labelConf;
+  var labelConf = merge(settings.labelConf, {
+      enable: false,
+      style: { fontFamily: "Arial", fontSize: "20px" ,  fill: 0xFFFFFF},
+  });
 
   // Where do we render our graph?
   if (typeof settings.container === 'undefined') {
@@ -43,11 +50,13 @@ module.exports = function (graph, settings) {
   var height = settings.container.clientHeight;
 
   var stage = new PIXI.Container();
-  var renderer = PIXI.autoDetectRenderer(width, height, null, false, true);
+  var renderer = PIXI.autoDetectRenderer(width, height, settings.rendererOptions, false, true);
 
   settings.container.appendChild(renderer.view);
 
   var graphics = new PIXI.Graphics();
+  graphics.interactive = true;
+  eventify(graphics);
   graphics.position.x = width/2;
   graphics.position.y = height/2;
   graphics.scale.x = 1;
@@ -57,6 +66,7 @@ module.exports = function (graph, settings) {
   // Default callbacks to build/render nodes
   var nodeUIBuilder = defaultCreateNodeUI,
       nodeRenderer  = defaultNodeRenderer,
+      labelRenderer = defaultLabelRenderer,
       linkUIBuilder = defaultCreateLinkUI,
       linkRenderer  = defaultLinkRenderer;
 
@@ -74,8 +84,15 @@ module.exports = function (graph, settings) {
      */
     run: animationLoop,
 
+    /**
+     * Allows client to stop the animation loop
+     */
     stop: stopRendered,
 
+
+    /**
+     * Allow client to resume animation loop
+     */
     resume: resumeRenderer,
 
     /**
@@ -174,6 +191,11 @@ module.exports = function (graph, settings) {
       return this;
     },
 
+    renderLabel: function(renderLabelCallBack){
+      labelRenderer = renderLabelCallBack
+      return this;
+    },
+
     /**
      * Tries to get node at (x, y) graph coordinates. By default renderer assumes
      * width and height of the node is 10 pixels. But if your createNodeUICallback
@@ -235,7 +257,7 @@ module.exports = function (graph, settings) {
 
     Object.keys(linkUI).forEach(renderLink);
     Object.keys(nodeUI).forEach(renderNode);
-
+    Object.keys(nodeUI).forEach(renderLabel);
     renderer.render(stage);
   }
 
@@ -247,11 +269,17 @@ module.exports = function (graph, settings) {
     nodeRenderer(nodeUI[nodeId], graphics);
   }
 
+  function renderLabel(nodeId) {
+    labelRenderer(nodeUI[nodeId], graphics);
+  }
+
   function initNode(node) {
+
     var ui = nodeUIBuilder(node);
     // augment it with position data:
     ui.pos = layout.getNodePosition(node.id);
     // and store for subsequent use:
+    ui.textLabel = node.id;
     nodeUI[node.id] = ui;
   }
 
@@ -259,6 +287,7 @@ module.exports = function (graph, settings) {
     var ui = linkUIBuilder(link);
     ui.from = layout.getNodePosition(link.fromId);
     ui.to = layout.getNodePosition(link.toId);
+    ui.oriented = settings.oriented;
     linkUI[link.id] = ui;
   }
 
@@ -275,11 +304,14 @@ module.exports = function (graph, settings) {
         y = node.pos.y - NODE_WIDTH/2;
     graphics.beginFill(0xFF3300);
     graphics.drawRect(x, y, NODE_WIDTH, NODE_WIDTH);
+  }
 
+  function defaultLabelRenderer(node){
+    var x = node.pos.x - NODE_WIDTH/2,
+        y = node.pos.y - NODE_WIDTH/2;
     if(labelConf.enable){
       if(node.label === undefined){
-
-        node.label = new PIXI.Text(labelConf.text, { fontFamily: "Arial", fontSize: "20px" ,  fill: 0x000000} );
+        node.label = new PIXI.Text(node.textLabel, labelConf.style);
         node.label.x = x;
         node.label.y = y + NODE_WIDTH/2;
         graphics.addChild(node.label);
@@ -289,13 +321,49 @@ module.exports = function (graph, settings) {
         node.label.updateText();
       }
     }
-    
   }
 
   function defaultLinkRenderer(link) {
     graphics.lineStyle(2, 0xcccccc, 1);
     graphics.moveTo(link.from.x, link.from.y);
     graphics.lineTo(link.to.x, link.to.y);
+    if(link.oriented === true){
+      link.oriented = settings.oriented;
+      //Add the arch to the link
+      // first, let's compute normalized vector for our link:
+      let dx = link.to.x - link.from.x;
+      let dy = link.to.y - link.from.y;
+      let l = Math.sqrt(dx * dx + dy * dy);
+
+      if (l === 0) return; // if length is 0 - can't render arrows
+
+      // This is our normal vector. It describes direction of the graph
+      // link, and has length == 1:
+      let nx = dx/l; let ny = dy/l;
+
+      // Now let's draw the arrow:
+      let arrowLength = 6;       // Length of the arrow
+      let arrowWingsLength = 2;  // How far arrow wings are from the link?
+
+      // This is where arrow should end. We do `(l - NODE_WIDTH)` to
+      // make sure it ends before the node UI element.
+      let ex = link.from.x + nx * (l - NODE_WIDTH / 1.5);
+      let ey = link.from.y + ny * (l - NODE_WIDTH / 1.5);
+
+      // Offset on the graph link, where arrow wings should be
+      let sx = link.from.x + nx * (l - (NODE_WIDTH / 1.5) - arrowLength);
+      let sy = link.from.y + ny * (l - (NODE_WIDTH / 1.5) - arrowLength);
+
+      // orthogonal vector to the link vector is easy to compute:
+      let topX = -ny;
+      let topY = nx;
+
+      // Let's draw the arrow:
+      graphics.moveTo(ex, ey);
+      graphics.lineTo(sx + topX * arrowWingsLength, sy + topY * arrowWingsLength);
+      graphics.moveTo(ex, ey);
+      graphics.lineTo(sx - topX * arrowWingsLength, sy - topY * arrowWingsLength);
+    }
   }
 
   function getNodeAt(x, y) {
