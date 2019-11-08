@@ -7,15 +7,16 @@
 
 module.exports.main = function () {
   var graph = require('ngraph.generators').balancedBinTree(5);
+  //var graph = require('ngraph.generators').grid(20, 20);
   var createPixiGraphics = require('../');
   var setting = {
     rendererOptions: {
-      backgroundColor: 0xFFFFFF,
+      backgroundColor: 0x323232,
       antialias: true,
     },
     labelConf: {
       enable: true,
-      style: { fontFamily: "Arial", fontSize: "20px" ,  fill: 0x000000}
+      style: { fontFamily: "Roboto", fontSize: "16px" ,  fill: 0xFFFFFF}
     }, 
     oriented: true,
   }
@@ -24,7 +25,7 @@ module.exports.main = function () {
   pixiGraphics.renderLink(require('./lib/renderLink'));
   pixiGraphics.createNodeUI(require('./lib/createNodeUI'));
   pixiGraphics.renderNode(require('./lib/renderNode'));
-  pixiGraphics.renderLabel(require('./lib/renderLabel'));
+  //pixiGraphics.renderLabel(require('./lib/renderLabel'));
   
   var layout = pixiGraphics.layout;
 

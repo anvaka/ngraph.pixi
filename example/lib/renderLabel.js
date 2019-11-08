@@ -1,33 +1,33 @@
+const NODE_WIDTH = 10;
+
 module.exports = function (animatedNode, ctx) {
 
-  ctx.on('hover', function(animatedNode, ctx){
-    let x = animatedNode.pos.x;
-    let y = animatedNode.pos.y / 2;
+  animatedNode.on('hover', function(mouseData, animatedNode, ctx){
+    var x = animatedNode.pos.x - NODE_WIDTH/2,
+        y = animatedNode.pos.y - NODE_WIDTH/2;
     if(animatedNode.label === undefined){
-      animatedNode.label = new PIXI.Text('@author vincenzopalazzo', { fontFamily: "Arial", fontSize: "20px" ,  fill: 0x000000} );
+      animatedNode.label = new PIXI.Text('@author vincenzopalazzo', { fontFamily: "Arial", fontSize: "20px" ,  fill: 0xfffff} );
       animatedNode.label.x = x;
-      animatedNode.label.y = - y;
+      animatedNode.label.y = y + NODE_WIDTH/2;
       ctx.addChild(animatedNode.label);
     }else{
       animatedNode.label.x = x;
-      animatedNode.label.y = y;
+      animatedNode.label.y = y + NODE_WIDTH/2;
     }
   });
 
-  ctx.on('unhover', function(animatedNode, ctx){
-      ctx.removeChild(animatedNode.label);
+  animatedNode.on('unhover', function(animatedNode, ctx){
+     ctx.removeChild(animatedNode.label);
       delete animatedNode.label;
-
   });
 
-  ctx.mouseover = function() {
+  ctx.mouseover = function(events) {
     console.debug('I\'call the hover events');
-    this.fire('hover', animatedNode, ctx);
+    animatedNode.fire('hover', events, animatedNode, ctx);
   }
 
   ctx.mouseout = function() {
     console.debug('I\'call the unhover events');
-    this.fire('unhover', animatedNode, ctx);
+    animatedNode.fire('unhover', animatedNode, ctx);
   }
-  
 }

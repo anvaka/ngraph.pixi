@@ -22,7 +22,6 @@ module.exports = function (graph, settings) {
       gravity: -1.2,
       theta: 1
     },
-
     oriented: false,
   });
 
@@ -54,9 +53,9 @@ module.exports = function (graph, settings) {
 
   settings.container.appendChild(renderer.view);
 
+
   var graphics = new PIXI.Graphics();
   graphics.interactive = true;
-  eventify(graphics);
   graphics.position.x = width/2;
   graphics.position.y = height/2;
   graphics.scale.x = 1;
@@ -266,7 +265,12 @@ module.exports = function (graph, settings) {
   }
 
   function renderNode(nodeId) {
-    nodeRenderer(nodeUI[nodeId], graphics);
+    let node = nodeUI[nodeId];
+    if(node.eventAdd === undefined || node.eventAdd !== true){
+      eventify(node);
+      node.eventAdd = true;
+    }
+    nodeRenderer(node, graphics);
   }
 
   function renderLabel(nodeId) {
