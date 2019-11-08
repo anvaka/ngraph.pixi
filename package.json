@@ -20,7 +20,6 @@
     "url": "https://github.com/anvaka/ngraph.pixi"
   },
   "dependencies": {
-    "ngraph.events": "^1.0.0",
     "ngraph.forcelayout": "0.1.2",
     "ngraph.merge": "0.0.1",
     "ngraph.physics.simulator": "0.0.11",

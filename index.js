@@ -2,7 +2,6 @@ const NODE_WIDTH = 10;
 
 let rendererLoopStop = false;
 let PIXI = require('pixi.js');
-let eventify = require('ngraph.events');
 
 module.exports = function (graph, settings) {
   var merge = require('ngraph.merge');
