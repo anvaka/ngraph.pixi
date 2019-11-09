@@ -265,10 +265,6 @@ module.exports = function (graph, settings) {
 
   function renderNode(nodeId) {
     let node = nodeUI[nodeId];
-    if(node.eventAdd === undefined || node.eventAdd !== true){
-      eventify(node);
-      node.eventAdd = true;
-    }
     nodeRenderer(node, graphics);
   }
 
