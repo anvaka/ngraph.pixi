@@ -61,7 +61,7 @@ module.exports = function (graph, settings) {
       height = settings.container.clientHeight;
 
   var stage = new PIXI.Container();
-  var renderer = PIXI.autoDetectRenderer(width, height, settings.rendererOptions, false, true);
+  var renderer = PIXI.autoDetectRenderer({ width, height, ...settings.rendererOptions });
 
   settings.container.appendChild(renderer.view);
 
