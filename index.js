@@ -1,7 +1,7 @@
 var NODE_WIDTH = 10;
 var PIXI = require('pixi.js');
 
-module.exports = function (graph, settings) {
+module.exports = function (graph, settings, renderer, stage) {
   var merge = require('ngraph.merge');
 
   // Initialize default settings:
@@ -35,13 +35,20 @@ module.exports = function (graph, settings) {
     layout = createLayout(graph, physics(settings.physics));
   }
 
-  var width = settings.container.clientWidth,
-      height = settings.container.clientHeight;
+  let width, height;
 
-  var stage = new PIXI.Container();
-  var renderer = PIXI.autoDetectRenderer(width, height, settings.rendererOptions, false, true);
-
-  settings.container.appendChild(renderer.view);
+  if (!stage) {
+    stage = new PIXI.Container();
+  }
+  if (!renderer) {
+    width = settings.container.clientWidth;
+    height = settings.container.clientHeight;
+    renderer = PIXI.autoDetectRenderer({ width, height, ...settings.rendererOptions });
+    settings.container.appendChild(renderer.view);
+  } else {
+    width = renderer.width;
+    height = renderer.height;
+  }
 
   var graphics = new PIXI.Graphics();
   graphics.position.x = width/2;
