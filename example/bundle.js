@@ -5,11 +5,16 @@
 //
 // Then open ./example/index.html
 //
+var PIXI = require('pixi.js');;
+
 module.exports.main = function () {
   var graph = require('ngraph.generators').balancedBinTree(6);
   var createPixiGraphics = require('../');
 
-  var pixiGraphics = createPixiGraphics(graph);
+  var pixi = new PIXI.Application({ width: 200, height: 200});
+  document.body.appendChild(pixi.view);
+
+  var pixiGraphics = createPixiGraphics(graph, undefined, pixi.renderer, pixi.stage);
   var layout = pixiGraphics.layout;
 
   // just make sure first node does not move:
@@ -19,11 +24,11 @@ module.exports.main = function () {
   pixiGraphics.run();
 }
 
-},{"../":2,"ngraph.generators":55}],2:[function(require,module,exports){
+},{"../":2,"ngraph.generators":55,"pixi.js":77}],2:[function(require,module,exports){
 var NODE_WIDTH = 10;
 var PIXI = require('pixi.js');
 
-module.exports = function (graph, settings) {
+module.exports = function (graph, settings, renderer, stage) {
   var merge = require('ngraph.merge');
 
   // Initialize default settings:
@@ -57,13 +62,20 @@ module.exports = function (graph, settings) {
     layout = createLayout(graph, physics(settings.physics));
   }
 
-  var width = settings.container.clientWidth,
-      height = settings.container.clientHeight;
+  let width, height;
 
-  var stage = new PIXI.Container();
-  var renderer = PIXI.autoDetectRenderer({ width, height, ...settings.rendererOptions });
-
-  settings.container.appendChild(renderer.view);
+  if (!stage) {
+    stage = new PIXI.Container();
+  }
+  if (!renderer) {
+    width = settings.container.clientWidth;
+    height = settings.container.clientHeight;
+    renderer = PIXI.autoDetectRenderer({ width, height, ...settings.rendererOptions });
+    settings.container.appendChild(renderer.view);
+  } else {
+    width = renderer.width;
+    height = renderer.height;
+  }
 
   var graphics = new PIXI.Graphics();
   graphics.position.x = width/2;
